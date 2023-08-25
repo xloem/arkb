@@ -3,7 +3,7 @@ import os from 'os';
 import path from 'path';
 
 export const getTempDir = () => {
-  if (process.env.ENV === 'cloud') return os.tmpdir();
+  if (process.env.RUNTIME_ENV === 'cloud') return os.tmpdir();
   const localDir = './temp';
   if (!fs.existsSync(localDir)) fs.mkdirSync(localDir);
   return localDir;
