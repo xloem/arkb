@@ -8,12 +8,7 @@
   "files": [
     "bin/**/*"
   ],
-  "bin": {
-    "arkb": "./bin/app.js"
-  },
   "scripts": {
-    "start": "node ./bin/app.js",
-    "dev": "node ./bin/app.js",
     "prebuild": "rimraf bin",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
