@@ -1,13 +1,8 @@
 {
   "name": "@lost-worlds/arkb",
   "version": "1.1.93",
-  "main": "./bin/app.js",
-  "repository": "https://github.com/textury/arkb.git",
-  "author": "Cedrik <cedrik.git@tryninja.io>",
+  "main": "dist/index.js",
   "license": "MIT",
-  "files": [
-    "bin/**/*"
-  ],
   "scripts": {
     "prebuild": "rimraf bin",
     "build": "tsc",
