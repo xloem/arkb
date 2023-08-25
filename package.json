@@ -1,6 +1,6 @@
 {
-  "name": "arkb",
-  "version": "1.1.60",
+  "name": "@lost-worlds/arkb",
+  "version": "1.1.90",
   "main": "./bin/app.js",
   "repository": "https://github.com/textury/arkb.git",
   "author": "Cedrik <cedrik.git@tryninja.io>",
@@ -13,17 +13,11 @@
   },
   "scripts": {
     "start": "node ./bin/app.js",
-    "predev": "yarn build",
     "dev": "node ./bin/app.js",
     "prebuild": "rimraf bin",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "tslint -p tsconfig.json",
-    "prepare": "npm run build && husky install",
-    "prepublishOnly": "npm run lint",
-    "preversion": "npm run lint",
-    "version": "npm run format && git add -A src",
-    "postversion": "git push && git push --tags"
+    "lint": "tslint -p tsconfig.json"
   },
   "engines": {
     "node": ">=15.11.0",

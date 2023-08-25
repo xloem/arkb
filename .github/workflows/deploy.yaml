@@ -1,0 +1,11 @@
+name: Publish arkb
+
+on:
+  push:
+    branches:
+      - main
+  
+jobs:
+  publish:
+    uses: lost-worlds/.github/.github/workflows/deploy-package.yaml@main
+    secrets: inherit

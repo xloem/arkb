@@ -88,6 +88,8 @@ export default class Deploy {
     feeMultiplier?: number,
     forceRedeploy: boolean = false,
     colors: boolean = true,
+    orderedPaths: string[] = [],
+    mimeType: string = '',
   ) {
     this.txs = [];
 
@@ -151,7 +153,7 @@ export default class Deploy {
           }
         }
 
-        const type = mime.getType(filePath) || 'application/octet-stream';
+        const type = mime.getType(filePath) || mimeType || 'application/octet-stream';
         const newTags = new Tags();
         for (const tag of tags.tags) {
           newTags.addTag(tag.name, tag.value);
@@ -205,14 +207,14 @@ export default class Deploy {
     }
 
     // Don't allow manifest build
-    if (!isFile) await this.buildManifest(dir, index, tags, useBundler, feeMultiplier);
+    if (!isFile) await this.buildManifest(dir, index, tags, useBundler, feeMultiplier, orderedPaths);
 
     if (this.logs) countdown.stop();
 
     if (useBundler || this.localBundle) {
       this.bundle = await this.bundler.bundleAndSign(this.txs.map((t) => t.tx) as FileDataItem[]);
 
-      this.bundledTx = (await this.bundle.toTransaction({}, this.arweave, this.wallet)) as any;
+      this.bundledTx = (await this.bundle.toTransaction({}, this.arweave as any, this.wallet)) as any;
 
       await this.arweave.transactions.sign(this.bundledTx as unknown as ArweaveTransaction, this.wallet);
     }
@@ -325,8 +327,7 @@ export default class Deploy {
             console.log(parseColor(colors, 'Failed to deploy data item: ' + txData.filePath, 'red'));
           }
         } else if (this.localBundle) {
-          console.log('inside');
-          const txRes = await this.bundle.signAndSubmit(this.arweave, this.wallet);
+          const txRes = await this.bundle.signAndSubmit(this.arweave as any, this.wallet);
           console.log(txRes);
           deployed = true;
         }
@@ -409,6 +410,7 @@ export default class Deploy {
     tags: Tags,
     useBundler: string,
     feeMultiplier: number,
+    orderedPaths: string[],
   ) {
     const { results: pDuplicates } = await PromisePool.for(this.duplicates)
       .withConcurrency(this.threads)
@@ -440,6 +442,13 @@ export default class Deploy {
       if (!Object.keys(paths).includes(index)) {
         index = Object.keys(paths)[0];
       }
+    }
+
+    if (orderedPaths) {
+      orderedPaths.forEach((orderedPath, indexOfPath) => {
+        if (!paths[orderedPath]) throw Error(`${orderedPath} does not exist as a valid path! ${JSON.stringify(paths)}`);
+        paths[indexOfPath] = paths[orderedPath];
+      });
     }
 
     const data = {
