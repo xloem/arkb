@@ -494,7 +494,9 @@ export default class Deploy {
 
   private async toHash(data: Buffer): Promise<string> {
     const hash = crypto.createHash('sha256');
-    hash.update(data);
+    const chunkSize = 1024 * 1024 * 1024;
+    const chunks = Math.ceil(data.length / chunkSize);
+    for (let i = 0; i < chunks; i++) hash.update(data.subarray(i * chunkSize, (i + 1) * chunkSize));
     return hash.digest('hex');
   }
 }
